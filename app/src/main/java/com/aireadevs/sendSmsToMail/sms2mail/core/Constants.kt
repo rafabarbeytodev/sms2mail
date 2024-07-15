@@ -16,6 +16,7 @@ object Constants {
     //Datastore
     const val USER_PREFERENCES_NAME = "user_preferences"
     const val MAIL_DEVELOPER = "mailDeveloper"
+    const val MAIL_TO_SEND = "mailToSend"
     const val NUMBER_VISITS = "numberVisits"
     const val SHOW_FIVE_STARS = "showFiveStars"
     const val NOT_SHOW_FIVE_STARS = "notshowfivestars"

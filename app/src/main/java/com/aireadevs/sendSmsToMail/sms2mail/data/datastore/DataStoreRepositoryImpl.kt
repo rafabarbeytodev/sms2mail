@@ -12,9 +12,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.MAIL_DEVELOPER
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.MAIL_TO_SEND
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.NOT_SHOW_FIVE_STARS
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.NUMBER_VISITS
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.SHOW_FIVE_STARS
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -62,6 +64,7 @@ class DataStoreRepositoryImpl @Inject constructor(
             .map { preferences ->
                 DataStoreEntity(
                     mailDeveloper = preferences[stringPreferencesKey(MAIL_DEVELOPER)].orEmpty(),
+                    mailToSend = preferences[stringPreferencesKey(MAIL_TO_SEND)].orEmpty(),
                     showFiveStars = preferences[booleanPreferencesKey(SHOW_FIVE_STARS)] ?: true,
                     numberOfVisits = preferences[intPreferencesKey(NUMBER_VISITS)] ?: 0,
                     notshowfivestars = preferences[booleanPreferencesKey(NOT_SHOW_FIVE_STARS)] ?: true,

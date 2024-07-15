@@ -13,6 +13,7 @@ import com.google.gson.annotations.SerializedName
  *****/
 data class DataStoreEntity(
     @SerializedName("mailDeveloper") var mailDeveloper: String = "",
+    @SerializedName("mailToSend") var mailToSend: String = "",
     @SerializedName("showFiveStars") var showFiveStars: Boolean = false,
     @SerializedName("numberOfVisits") var numberOfVisits: Int = 0,
     @SerializedName("NotShowFiveStars") var notshowfivestars: Boolean = false
