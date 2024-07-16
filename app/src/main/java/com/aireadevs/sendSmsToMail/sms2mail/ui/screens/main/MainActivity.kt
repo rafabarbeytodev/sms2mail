@@ -1,15 +1,18 @@
 package com.aireadevs.sendSmsToMail.sms2mail.ui.screens.main
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.provider.Telephony.Sms
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -25,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,15 +42,22 @@ import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.aireadevs.sendSmsToMail.sms2mail.core.BroadcastReceiverService
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.AUTH
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.FROM_ADDRESS
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.HOST
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.PASSWORD
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.PORT
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.TAG
 import com.aireadevs.sendSmsToMail.sms2mail.ui.theme.Sms2MailTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mainVM: MainViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,18 +95,62 @@ class MainActivity : ComponentActivity() {
                         MaterialTheme.colorScheme.background.toArgb()
                     )
                 )
-                CheckInternetConnection()
+                MainScreen()
             }
         }
     }
 
     @Preview
     @Composable
-    private fun CheckInternetConnection() {
+    private fun MainScreen() {
 
         val internetConnection by mainVM.internetConnection.collectAsStateWithLifecycle()
         val mailToSend by mainVM.mailToSend.collectAsStateWithLifecycle()
         var emailToSend by remember { mutableStateOf("") }
+        var permissionGranted by remember { mutableStateOf(false) }
+
+        PermissionRequestEffect(Manifest.permission.RECEIVE_SMS) { granted ->
+            permissionGranted = granted
+            Log.i(TAG, "Permiso SMS: $granted")
+        }
+
+        if (permissionGranted) {
+            BroadcastReceiverService(systemAction = Sms.Intents.SMS_RECEIVED_ACTION) { receiveIntent ->
+                val action = receiveIntent?.action ?: return@BroadcastReceiverService
+                if (action == Sms.Intents.SMS_RECEIVED_ACTION) {
+                    val sms = Sms.Intents.getMessagesFromIntent(receiveIntent)
+                    val extras = receiveIntent.extras
+                    val simSlotReceptionIndex = extras?.getInt("subscription", -1)
+                    var message = ""
+                    val origin = sms.first().originatingAddress ?: ""
+                    val dateIn = sms.first().timestampMillis
+                    val simpleDateFormat =
+                        SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault())
+                    val dateString = simpleDateFormat.format(dateIn)
+                    for (i in sms!!.indices) {
+                        message += sms[i].messageBody
+                    }
+                    Log.i(
+                        TAG,
+                        "mensaje: $message de $origin ${
+                            String.format(
+                                "a las %s",
+                                dateString
+                            )
+                        } y recibido en la SIM $simSlotReceptionIndex"
+                    )
+                    mainVM.sendMailSmtp(
+                        HOST,
+                        PORT,
+                        AUTH,
+                        FROM_ADDRESS,
+                        PASSWORD,
+                        mailToSend,
+                        message
+                    )
+                }
+            }
+        }
 
         Column(
             modifier = Modifier
@@ -105,7 +160,6 @@ class MainActivity : ComponentActivity() {
             verticalArrangement = Arrangement.Center
         ) {
             Box {
-                Log.i(TAG, "Conexion Internet: $internetConnection")
                 Text(
                     "Conexion Internet: $internetConnection",
                     color = MaterialTheme.colorScheme.primary
@@ -138,7 +192,10 @@ class MainActivity : ComponentActivity() {
             }
             Spacer(modifier = Modifier.height(18.dp))
             Box {
-                Text(text = "Cuenta salvada:\n$mailToSend", color = MaterialTheme.colorScheme.primary)
+                Text(
+                    text = "Cuenta salvada:\n$mailToSend",
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
@@ -150,5 +207,20 @@ class MainActivity : ComponentActivity() {
         mainVM.checkInternetConnection(this)
         //flow con DataStore
         mainVM.getDataStoreFields()
+
+    }
+
+    @Composable
+    fun PermissionRequestEffect(permission: String, onResult: (Boolean) -> Unit) {
+        val permissionLauncher =
+            rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) {
+                onResult(it)
+            }
+
+        LaunchedEffect(Unit) {
+            permissionLauncher.launch(permission)
+        }
     }
 }

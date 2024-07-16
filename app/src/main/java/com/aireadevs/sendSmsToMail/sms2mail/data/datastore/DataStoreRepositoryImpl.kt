@@ -3,20 +3,19 @@ package com.aireadevs.sendSmsToMail.sms2mail.data.datastore
 import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
-import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.USER_PREFERENCES_NAME
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.aireadevs.sendSmsToMail.sms2mail.core.Constants
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.MAIL_DEVELOPER
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.MAIL_TO_SEND
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.NOT_SHOW_FIVE_STARS
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.NUMBER_VISITS
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.SHOW_FIVE_STARS
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.TAG
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.USER_PREFERENCES_NAME
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -70,7 +69,7 @@ class DataStoreRepositoryImpl @Inject constructor(
                     notshowfivestars = preferences[booleanPreferencesKey(NOT_SHOW_FIVE_STARS)] ?: true,
                 )
             }.catch { error ->
-                Log.i(Constants.TAG, "ACCESS ERROR DATASTORE: ${error.message}")
+                Log.i(TAG, "ACCESS ERROR DATASTORE: ${error.message}")
             }
     }
 

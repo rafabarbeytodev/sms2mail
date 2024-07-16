@@ -21,6 +21,11 @@ object Constants {
     const val SHOW_FIVE_STARS = "showFiveStars"
     const val NOT_SHOW_FIVE_STARS = "notshowfivestars"
 
-    const val VISITED_WITH_SET = 5
+    const val SUBJECT = "SMS Forward from Sms2mail"
+    const val PASSWORD = "laiexidxdalolryo"
+    const val FROM_ADDRESS = "rbartorre@gmail.com"
+    const val HOST = "smtp.gmail.com"
+    const val PORT = "465"
+    const val AUTH = "true"
 
 }

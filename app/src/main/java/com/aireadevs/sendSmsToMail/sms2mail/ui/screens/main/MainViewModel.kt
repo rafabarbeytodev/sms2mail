@@ -7,15 +7,24 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.SUBJECT
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.TAG
-import com.aireadevs.sendSmsToMail.sms2mail.data.datastore.DataStoreEntity
 import com.aireadevs.sendSmsToMail.sms2mail.data.datastore.DataStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Properties
 import javax.inject.Inject
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.MessagingException
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
 
 /*****
  * Proyect: sms2mail
@@ -98,17 +107,17 @@ class MainViewModel @Inject constructor(
         })
     }
 
-    fun saveDataStoreString(field: String, value:String){
+    fun saveDataStoreString(field: String, value: String) {
         viewModelScope.launch {
-            dataStore.putString(field,value)
+            dataStore.putString(field, value)
         }
     }
 
-    fun getDataStoreFields(){
+    fun getDataStoreFields() {
         viewModelScope.launch {
             dataStore.getDataStore().collect { data ->
                 if (data != null) {
-                    with(data){
+                    with(data) {
                         _mailDeveloper.value = mailDeveloper
                         _mailToSend.value = mailToSend
                         _numberOfVisits.value = numberOfVisits
@@ -120,4 +129,41 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun sendMailSmtp(
+        host: String,
+        port: String,
+        auth: String,
+        fromAddress: String,
+        password: String,
+        toAddress: String,
+        message: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val props = Properties()
+                props["mail.smtp.host"] = host
+                props["mail.smtp.socketFactory.port"] = port
+                props["mail.smtp.socketFactory.class"] = "javax.net.ssl.SSLSocketFactory"
+                props["mail.smtp.auth"] = auth
+                props["mail.smtp.port"] = port
+
+                Log.d(TAG, "sendEmail: one")
+                val session = Session.getInstance(props, object : Authenticator() {
+                    override fun getPasswordAuthentication(): PasswordAuthentication {
+                        return PasswordAuthentication(fromAddress, password)
+                    }
+                })
+                val mm = MimeMessage(session)
+                mm.setFrom(InternetAddress(fromAddress))
+                mm.addRecipient(Message.RecipientType.TO, InternetAddress(toAddress))
+                mm.subject = SUBJECT
+                mm.setText(message)
+                Log.d(TAG, "sendEmail: two")
+                Transport.send(mm)
+                Log.d(TAG, "sendEmail: three")
+            } catch (e: Exception) {
+                Log.d(TAG, "sendEmail: ${e.message}")
+            }
+        }
+    }
 }

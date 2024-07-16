@@ -1,12 +1,10 @@
 [versions]
-agp = "8.5.0"
+agp = "8.5.1"
 androidxRoomKtxVersion = "2.6.1"
 coreSplashscreen = "1.0.1"
-daggerCompiler = "2.51.1"
 datastorePreferencesVersion = "1.1.1"
 gson = "2.10.1"
 hiltAndroid = "2.48.1"
-jetbrainsKotlinxSerializationJson = "1.4.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -16,16 +14,19 @@ lifecycleRuntimeKtx = "2.8.3"
 activityCompose = "1.9.0"
 composeBom = "2024.06.00"
 datastoreCoreAndroid = "1.1.1"
-datastorePreferencesCoreJvm = "1.1.1"
 navigationCompose = "2.7.7"
+playServicesFido = "21.1.0"
+sunAndroidMailVersion = "1.6.7"
 
 [libraries]
+android-activation = { module = "com.sun.mail:android-activation", version.ref = "sunAndroidMailVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+com-sun-mail-android-mail = { module = "com.sun.mail:android-mail", version.ref = "sunAndroidMailVersion" }
 room-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidxRoomKtxVersion" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoomKtxVersion" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidxRoomKtxVersion" }
@@ -46,6 +47,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
+play-services-fido = { group = "com.google.android.gms", name = "play-services-fido", version.ref = "playServicesFido" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

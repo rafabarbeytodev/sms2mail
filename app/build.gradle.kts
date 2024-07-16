@@ -56,6 +56,7 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/{NOTICE.md,LICENSE.md,LICENSE-notice.md}"
         }
     }
 }
@@ -76,6 +77,7 @@ dependencies {
     implementation(libs.androidx.material3)
     //*DAGGER HILT *//
     implementation(libs.hilt.android)
+    implementation(libs.play.services.fido)
     ksp(libs.dagger.hilt.android.compiler)
     //Serializacion GSON
     implementation(libs.gson)
@@ -88,6 +90,9 @@ dependencies {
     ksp(libs.room.compiler)
     //* SPLASHSCREEN *//
     implementation(libs.androidx.core.splashscreen)
+    //javamail
+    implementation(libs.com.sun.mail.android.mail)
+    implementation(libs.android.activation)
 
     //* TEST *//
     testImplementation(libs.junit)
