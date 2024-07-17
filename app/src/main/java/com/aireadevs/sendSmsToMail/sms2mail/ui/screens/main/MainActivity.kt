@@ -32,23 +32,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                mainVM.splashShow.value
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            installSplashScreen().apply {
+                setKeepOnScreenCondition {
+                    mainVM.splashShow.value
+                }
+                setOnExitAnimationListener { screen ->
+                    val fadeAnim = ObjectAnimator.ofFloat(
+                        screen.iconView,
+                        View.ALPHA,
+                        1f,
+                        0f
+                    )
+                    fadeAnim.interpolator = AccelerateInterpolator()
+                    fadeAnim.duration = 800L
+                    fadeAnim.doOnEnd { screen.remove() }
+                    fadeAnim.start()
+                }
             }
-            setOnExitAnimationListener { screen ->
-                val fadeAnim = ObjectAnimator.ofFloat(
-                    screen.iconView,
-                    View.ALPHA,
-                    1f,
-                    0f
-                )
-                fadeAnim.interpolator = AccelerateInterpolator()
-                fadeAnim.duration = 800L
-                fadeAnim.doOnEnd { screen.remove() }
-                fadeAnim.start()
-            }
-
         }
 
         initUI()

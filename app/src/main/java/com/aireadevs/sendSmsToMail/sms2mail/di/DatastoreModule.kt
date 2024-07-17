@@ -6,7 +6,6 @@ import com.aireadevs.sendSmsToMail.sms2mail.data.datastore.DataStoreRepositoryIm
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -31,3 +30,4 @@ class DatastoreModule {
     ): DataStoreRepository = DataStoreRepositoryImpl(context)
 
 }
+

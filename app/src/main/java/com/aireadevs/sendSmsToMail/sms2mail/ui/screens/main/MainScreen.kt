@@ -1,11 +1,8 @@
 package com.aireadevs.sendSmsToMail.sms2mail.ui.screens.main
 
 import android.Manifest
-import android.content.Intent
 import android.os.Build
-import android.provider.Telephony.Sms
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -21,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,20 +25,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.AUTH
-import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.FROM_ADDRESS
-import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.HOST
-import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.PASSWORD
-import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.PORT
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.TAG
 import com.aireadevs.sendSmsToMail.sms2mail.core.PermissionRequestEffect
-import com.aireadevs.sendSmsToMail.sms2mail.domain.BroadcastReceiverService
-import com.aireadevs.sendSmsToMail.sms2mail.domain.SmsForegroundService
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 /*****
  * Proyect: sms2mail
@@ -59,8 +45,6 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(mainVM:MainViewModel) {
-
-    val context = LocalContext.current
 
     val internetConnection by mainVM.internetConnection.collectAsStateWithLifecycle()
     val mailToSend by mainVM.mailToSend.collectAsStateWithLifecycle()
@@ -86,45 +70,6 @@ fun MainScreen(mainVM:MainViewModel) {
                 Log.i(TAG, "Permiso NOTIFICACIONES DENEGADO")
             }else{
                 Log.i(TAG, "Permiso NOTIFICACIONES CONCEDIDO")
-            }
-        }
-    }
-
-    if (permissionSmsGranted) {
-        BroadcastReceiverService(systemAction = Sms.Intents.SMS_RECEIVED_ACTION) { receiveIntent ->
-            val action = receiveIntent?.action ?: return@BroadcastReceiverService
-            if (action == Sms.Intents.SMS_RECEIVED_ACTION) {
-                val sms = Sms.Intents.getMessagesFromIntent(receiveIntent)
-                val extras = receiveIntent.extras
-                val simSlotReceptionIndex = extras?.getInt("subscription", -1)
-                var message = ""
-                val origin = sms.first().originatingAddress ?: ""
-                val dateIn = sms.first().timestampMillis
-                val simpleDateFormat =
-                    SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault())
-                val dateString = simpleDateFormat.format(dateIn)
-                for (i in sms!!.indices) {
-                    message += sms[i].messageBody
-                }
-                Log.i(
-                    TAG,
-                    "mensaje: $message de $origin ${
-                        String.format(
-                            "a las %s",
-                            dateString
-                        )
-                    } y recibido en la SIM $simSlotReceptionIndex"
-                )
-                mainVM.sendMailSmtp(
-                    HOST,
-                    PORT,
-                    AUTH,
-                    FROM_ADDRESS,
-                    PASSWORD,
-                    mailToSend,
-                    message
-                )
-                Toast.makeText(context,"CORREO ENVIADO", Toast.LENGTH_LONG).show()
             }
         }
     }

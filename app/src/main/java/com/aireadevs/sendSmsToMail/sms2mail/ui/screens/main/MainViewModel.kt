@@ -5,14 +5,12 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.SUBJECT
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.TAG
 import com.aireadevs.sendSmsToMail.sms2mail.data.datastore.DataStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +34,7 @@ import javax.mail.internet.MimeMessage
  *
  * All rights reserved 2024.
  *****/
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val dataStore: DataStoreRepository,
