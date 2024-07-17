@@ -1,4 +1,4 @@
-package com.aireadevs.sendSmsToMail.sms2mail.core
+package com.aireadevs.sendSmsToMail.sms2mail.domain
 
 import android.content.BroadcastReceiver
 import android.content.Context

@@ -16,4 +16,5 @@ interface DataStoreRepository {
     suspend fun putInt(key: String, value: Int)
     suspend fun putBoolean(key: String, value: Boolean)
     suspend fun getDataStore(): Flow<DataStoreEntity?>
+
 }
