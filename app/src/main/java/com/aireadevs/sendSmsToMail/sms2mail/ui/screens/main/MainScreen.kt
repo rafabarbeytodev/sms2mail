@@ -3,7 +3,6 @@ package com.aireadevs.sendSmsToMail.sms2mail.ui.screens.main
 import android.Manifest
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +41,7 @@ import com.aireadevs.sendSmsToMail.sms2mail.core.PermissionRequestEffect
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun MainScreen(mainVM:MainViewModel) {
 

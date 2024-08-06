@@ -3,10 +3,8 @@ package com.aireadevs.sendSmsToMail.sms2mail.domain
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.Telephony.Sms
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.AUTH
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.FROM_ADDRESS
 import com.aireadevs.sendSmsToMail.sms2mail.core.Constants.HOST
@@ -41,7 +39,6 @@ import javax.mail.internet.MimeMessage
 
 class SmsBroadcastReceiver : BroadcastReceiver() {
     @OptIn(DelicateCoroutinesApi::class)
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent != null) {
             if (intent.action == Sms.Intents.SMS_RECEIVED_ACTION) {

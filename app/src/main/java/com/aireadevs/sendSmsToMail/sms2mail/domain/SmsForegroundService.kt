@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import com.aireadevs.sendSmsToMail.sms2mail.R
@@ -37,12 +36,8 @@ class SmsForegroundService : Service() {
     }
 
     private fun createNotification(): Notification {
-        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val builder =
             Notification.Builder(this, CHANNEL_ID)
-        } else {
-            Notification.Builder(this)
-                .setPriority(Notification.PRIORITY_DEFAULT)
-        }
         return builder
             .setContentTitle("SMS Receiver Service")
             .setTicker("SMS Receiver Service")
@@ -53,15 +48,13 @@ class SmsForegroundService : Service() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val serviceChannel = NotificationChannel(
-                CHANNEL_ID,
-                "SMS Receiver Service Channel",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(serviceChannel)
-        }
+        val serviceChannel = NotificationChannel(
+            CHANNEL_ID,
+            "SMS Receiver Service Channel",
+            NotificationManager.IMPORTANCE_HIGH
+        )
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(serviceChannel)
     }
 
     companion object {
